@@ -15,38 +15,35 @@ pipeline {
                 echo "Compiling Java code..."
                 sh '''
                     mkdir -p build
-                    javac -d build src/java/Javafile.java
+                    # compile java file in root folder
+                    javac -d build Javafile.java
                     echo "Running Java Program..."
-                    java -cp build Hello
+                    java -cp build Javafile
                 '''
             }
         }
 
         stage('Run Python Script') {
             steps {
-                echo "Executing Python script..."
+                echo "Running Python script..."
                 sh '''
-                    python3 scripts/python.py
+                    python3 test.py
                 '''
             }
         }
 
-        stage('Validate HTML File') {
+        stage('Validate HTML') {
             steps {
-                echo "Checking HTML file..."
+                echo "Validating HTML..."
                 sh '''
-                    # Option 1: Using tidy (common)
-                    tidy -errors src/html/index.html || true
-
-                    # Option 2: Using htmlhint (if installed)
-                    # htmlhint src/html/Htmlfile.html
+                    # tidy works on most systems
+                    tidy -errors index.html || true
                 '''
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                echo "Archiving build outputs..."
                 archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
