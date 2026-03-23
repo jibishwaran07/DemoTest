@@ -15,8 +15,10 @@ pipeline {
                 echo "Compiling Java code..."
                 sh '''
                     mkdir -p build
-                    # compile java file in root folder
+
+                    # Compile Javafile.java from root
                     javac -d build Javafile.java
+
                     echo "Running Java Program..."
                     java -cp build Javafile
                 '''
@@ -27,23 +29,25 @@ pipeline {
             steps {
                 echo "Running Python script..."
                 sh '''
-                    python3 test.py
+                    python3 python.py
                 '''
             }
         }
 
-        stage('Validate HTML') {
+        stage('Validate HTML File') {
             steps {
                 echo "Validating HTML..."
                 sh '''
-                    # tidy works on most systems
-                    tidy -errors index.html || true
+                    # Validate Htmlfile.html
+                    # tidy is available on most Linux servers
+                    tidy -errors Htmlfile.html || true
                 '''
             }
         }
 
         stage('Archive Artifacts') {
             steps {
+                echo "Archiving build output..."
                 archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
@@ -51,7 +55,7 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline executed successfully!"
+            echo "Pipeline completed successfully!"
         }
         failure {
             echo "Pipeline failed. Check logs."
