@@ -5,8 +5,14 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                echo "Pulling source code..."
-                checkout scm
+                echo "Pulling source code from branch1..."
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'origin/branch1']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/jibishwaran07/DemoTest.git'
+                    ]]
+                ])
             }
         }
 
@@ -39,7 +45,6 @@ pipeline {
                 echo "Validating HTML..."
                 sh '''
                     # Validate Htmlfile.html
-                    # tidy is available on most Linux servers
                     tidy -errors Htmlfile.html || true
                 '''
             }
